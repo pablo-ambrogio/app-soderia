@@ -4,8 +4,10 @@ import com.soderia.soderia.dto.ClienteDTO;
 import com.soderia.soderia.dto.CuentaDTO;
 import com.soderia.soderia.entities.Cliente;
 import com.soderia.soderia.entities.Cuenta;
+import com.soderia.soderia.entities.Producto;
 import com.soderia.soderia.service.IClienteService;
 import com.soderia.soderia.service.ICuentaService;
+import com.soderia.soderia.service.IProductoService;
 import org.hibernate.dialect.function.array.OracleArrayRemoveIndexFunction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,9 +24,13 @@ import java.util.Optional;
 @RequestMapping(path = "/api/v1/cuentas")
 public class CuentaController {
 
-    @Autowired ICuentaService cuentaService;
     @Autowired
-    IClienteService clienteService;
+    private ICuentaService cuentaService;
+    @Autowired
+    private IClienteService clienteService;
+    @Autowired
+    private IProductoService productoService;
+
 
 //    @GetMapping
 //    public ResponseEntity<?> obtenerTodos() {
@@ -57,29 +63,23 @@ public class CuentaController {
     }
 
     @PostMapping(path = "/add/{idCliente}")
-    public ResponseEntity<?> guardaCuenta(@RequestBody CuentaDTO cuentaDTO, @PathVariable("idCliente") Long id){
+    public ResponseEntity<?> guardaCuenta(@RequestBody CuentaDTO cuentaDTO, @PathVariable("idCliente") Long idCliente){
 
-        Optional<Cliente> clienteOptional = clienteService.buscarPorId(id);
+        // Buscamos el cliente por el ID en la BD
+        Optional<Cliente> clienteOptional = clienteService.buscarPorId(idCliente);
 
+        // Preguntamos si existe
         if (clienteOptional.isPresent()) {
 
+            // Obtenemos el cliente
             Cliente cliente = clienteOptional.get();
 
-//            ClienteDTO clienteDTO = ClienteDTO.builder()
-//                    .id(cliente.getId())
-//                    .nombre(cliente.getNombre())
-//                    .apellido(cliente.getApellido())
-//                    .direccion(cliente.getDireccion())
-//                    .build();
-
+            // Creamos una cuenta
             Cuenta cuenta = new Cuenta();
+            // Seteamos el cliente a una cuenta
             cuenta.setCliente(cliente);
+            cuenta.setProductos(cuenta.getProductos());
 
-//        Cuenta cuenta = Cuenta.builder()
-//                .cliente()
-//                .build();
-//        cuentaService.guardar(cuenta);
-//        return new ResponseEntity<>(new URI("/api/v1/cuentas"), HttpStatus.CREATED);
         return new ResponseEntity<>(cuentaService.guardar(cuenta), HttpStatus.CREATED);
         }
 
