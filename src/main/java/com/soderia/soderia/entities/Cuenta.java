@@ -25,8 +25,12 @@ public class Cuenta {
     @JoinColumn(name = "cliente_id", referencedColumnName = "id")
     private Cliente cliente;
 
-    @OneToMany(mappedBy = "cuenta")
-    @JsonIgnore
-    private List<Producto> productos;
+    @ManyToMany
+    @JoinTable(
+            name = "products",
+            joinColumns = @JoinColumn(name = "id_cuenta"),
+            inverseJoinColumns = @JoinColumn(name = "id_producto")
+    )
+    private Set<Producto> productos;
 
 }

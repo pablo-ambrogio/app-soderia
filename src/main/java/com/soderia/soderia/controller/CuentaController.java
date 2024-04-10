@@ -19,6 +19,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping(path = "/api/v1/cuentas")
@@ -55,6 +56,7 @@ public class CuentaController {
             CuentaDTO cuentaDTO = CuentaDTO.builder()
                     .id(cuenta.getId())
                     .cliente(cuenta.getCliente())
+                    .productos(cuenta.getProductos())
                     .build();
 
             return new ResponseEntity<>(cuentaDTO, HttpStatus.OK);
@@ -68,6 +70,13 @@ public class CuentaController {
         // Buscamos el cliente por el ID en la BD
         Optional<Cliente> clienteOptional = clienteService.buscarPorId(idCliente);
 
+//        Set<Producto> productos = null;
+//
+//        for ( Producto product: cuentaDTO.getProductos()) {
+//            Optional<Producto> productoOptional = productoService.buscarPorId(product.getId());
+//            productos.add(productoOptional.get());
+//        }
+
         // Preguntamos si existe
         if (clienteOptional.isPresent()) {
 
@@ -78,7 +87,7 @@ public class CuentaController {
             Cuenta cuenta = new Cuenta();
             // Seteamos el cliente a una cuenta
             cuenta.setCliente(cliente);
-            cuenta.setProductos(cuenta.getProductos());
+//            cuenta.setProductos(productos);
 
         return new ResponseEntity<>(cuentaService.guardar(cuenta), HttpStatus.CREATED);
         }

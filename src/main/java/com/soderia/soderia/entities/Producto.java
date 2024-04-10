@@ -25,8 +25,4 @@ public class Producto {
     @Column(nullable = false)
     private BigDecimal precio;
 
-    @ManyToOne
-    @JoinColumn(name = "cuenta_id", nullable = false)
-    private Cuenta cuenta;
-
 }
